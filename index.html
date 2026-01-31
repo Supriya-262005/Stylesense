@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StyleAI - Advanced Personal Stylist</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">StyleAI <span class="accent">.</span></div>
+            <p class="subtitle">Your AI-Powered Personal Stylist</p>
+        </header>
+
+        <main>
+            <section class="glass-panel upload-section" id="upload-panel">
+                <form id="style-form">
+                    <div class="file-drop-area">
+                        <span class="fake-btn">Choose Image</span>
+                        <span class="file-msg">or drag and drop your selfie here</span>
+                        <input class="file-input" type="file" name="image" accept="image/*" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Gender For Styling</label>
+                        <select name="gender" class="premium-select">
+                            <option value="Female">Female</option>
+                            <option value="Male">Male</option>
+                            <option value="Non-Binary">Non-Binary</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="cta-button">
+                        <span class="btn-text">Analyze & Style Me</span>
+                        <i class="fa-solid fa-wand-magic-sparkles"></i>
+                    </button>
+                    
+                    <!-- Optional: API Key Input if not set in env -->
+                    <div class="api-toggle">
+                        <input type="password" name="api_key" placeholder="Groq API Key (Optional if env set)" class="clean-input">
+                    </div>
+                </form>
+                
+                <div class="loading-overlay hidden" id="loading">
+                   <div class="loader"></div>
+                   <p>Analyzing facial geometry...</p>
+                </div>
+            </section>
+
+            <section class="results-section hidden" id="results-panel">
+                <div class="glass-panel profile-card">
+                    <h3>Your Style Profile</h3>
+                    <div class="profile-grid">
+                        <div class="stat-box">
+                            <i class="fa-regular fa-face-smile"></i>
+                            <span class="label">Face Shape</span>
+                            <span class="value" id="res-shape">Loading...</span>
+                        </div>
+                        <div class="stat-box">
+                            <i class="fa-solid fa-palette"></i>
+                            <span class="label">Skin Tone</span>
+                            <span class="value" id="res-tone">Loading...</span>
+                            <div class="color-dot" id="res-color-dot"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recommendation-grid" id="rec-grid">
+                    <!-- Dynamic Content -->
+                </div>
+                
+                <button class="cta-button secondary" onclick="resetApp()">Analyze Another</button>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        const form = document.getElementById('style-form');
+        const uploadPanel = document.getElementById('upload-panel');
+        const resultsPanel = document.getElementById('results-panel');
+        const loading = document.getElementById('loading');
+        const recGrid = document.getElementById('rec-grid');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            
+            loading.classList.remove('hidden');
+            
+            try {
+                const response = await fetch('/analyze', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                
+                displayResults(data);
+                
+                uploadPanel.classList.add('hidden');
+                resultsPanel.classList.remove('hidden');
+                
+            } catch (err) {
+                console.error(err);
+                alert("An error occurred during analysis.");
+            } finally {
+                loading.classList.add('hidden');
+            }
+        });
+
+        function displayResults(data) {
+            document.getElementById('res-shape').textContent = data.profile.shape;
+            document.getElementById('res-tone').textContent = data.profile.skin_tone;
+            document.getElementById('res-color-dot').style.backgroundColor = data.profile.hex;
+
+            recGrid.innerHTML = '';
+
+            // Helper to create cards
+            const createSection = (title, items) => {
+                let html = `<div class="rec-column"><h4>${title}</h4>`;
+                items.forEach(item => {
+                    const query = encodeURIComponent(`${item.keywords} ${data.profile.gender} fashion`);
+                    const googleShoppingUrl = `https://www.google.com/search?tbm=shop&q=${query}`;
+                    
+                    html += `
+                    <div class="rec-card">
+                        <h5>${item.name || item.style}</h5>
+                        <p>${item.description}</p>
+                        <a href="${googleShoppingUrl}" target="_blank" class="shop-link">
+                            <i class="fa-solid fa-bag-shopping"></i> Shop Now
+                        </a>
+                    </div>`;
+                });
+                html += `</div>`;
+                return html;
+            };
+
+            recGrid.innerHTML += createSection("Recommended Outfits", data.recommendations.outfits);
+            recGrid.innerHTML += createSection("Hair & Grooming", data.recommendations.hair);
+            recGrid.innerHTML += createSection("Accessories", data.recommendations.accessories);
+        }
+        
+        function resetApp() {
+            resultsPanel.classList.add('hidden');
+            uploadPanel.classList.remove('hidden');
+            form.reset();
+        }
+        
+        // File Input Animation
+        const fileInput = document.querySelector('.file-input');
+        const dropArea = document.querySelector('.file-drop-area');
+        
+        fileInput.addEventListener('change', () => {
+            const files = fileInput.files;
+            if (files.length > 0) {
+                dropArea.querySelector('.file-msg').textContent = files[0].name;
+            }
+        });
+    </script>
+</body>
+</html>

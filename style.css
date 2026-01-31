@@ -1,0 +1,293 @@
+:root {
+    --bg-dark: #0f0c29;
+    --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --text-primary: #ffffff;
+    --text-secondary: #b3b3b3;
+    --accent-color: #f7b733;
+    --accent-gradient: linear-gradient(to right, #fc4a1a, #f7b733);
+    --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+body {
+    margin: 0;
+    font-family: 'Outfit', sans-serif;
+    color: var(--text-primary);
+    background: var(--bg-gradient);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* Animated Background */
+.background-blobs {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.blob {
+    position: absolute;
+    filter: blur(80px);
+    opacity: 0.6;
+    animation: float 20s infinite ease-in-out;
+}
+
+.blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #302b63; }
+.blob-2 { bottom: -10%; right: -10%; width: 60vw; height: 60vw; background: #24243e; animation-delay: -5s; }
+.blob-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: #fc4a1a; opacity: 0.2; animation-delay: -10s; }
+
+@keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(50px, 50px); }
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    text-align: center;
+}
+
+header {
+    margin-bottom: 3rem;
+    animation: fadeInDown 1s ease-out;
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+}
+
+.accent {
+    color: var(--accent-color);
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+/* Glass Panel */
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: var(--card-shadow);
+    margin: 0 auto;
+    max-width: 600px;
+    transition: transform 0.3s ease;
+}
+
+.upload-section {
+    animation: fadeInUp 1s ease-out 0.2s backwards;
+}
+
+/* Form Elements */
+.file-drop-area {
+    border: 2px dashed var(--glass-border);
+    border-radius: 15px;
+    padding: 2rem;
+    position: relative;
+    transition: 0.3s;
+    margin-bottom: 2rem;
+    cursor: pointer;
+}
+
+.file-drop-area:hover {
+    border-color: var(--accent-color);
+    background: rgba(255,255,255,0.02);
+}
+
+.fake-btn {
+    background: var(--glass-glass);
+    border: 1px solid var(--glass-border);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    display: block;
+    width: fit-content;
+    margin: 0 auto 0.5rem;
+    font-weight: 600;
+}
+
+.file-input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.premium-select, .clean-input {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(0,0,0,0.2);
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    color: white;
+    margin-bottom: 1.5rem;
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+option {
+    background: #24243e;
+}
+
+.cta-button {
+    background: var(--accent-gradient);
+    border: none;
+    padding: 1rem 2.5rem;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(252, 74, 26, 0.4);
+}
+
+.cta-button.secondary {
+    background: transparent;
+    border: 2px solid var(--glass-border);
+    margin-top: 3rem;
+}
+
+.cta-button.secondary:hover {
+    background: rgba(255,255,255,0.1);
+}
+
+/* Results */
+.profile-card {
+    margin-bottom: 2rem;
+    padding: 2rem;
+}
+
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.stat-box {
+    background: rgba(255,255,255,0.05);
+    padding: 1rem;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.stat-box i {
+    font-size: 1.5rem;
+    color: var(--accent-color);
+}
+
+.stat-box .value {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.color-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1px solid white;
+}
+
+.recommendation-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    width: 100%;
+}
+
+.rec-column {
+    background: rgba(0,0,0,0.2);
+    border-radius: 20px;
+    padding: 1.5rem;
+}
+
+.rec-column h4 {
+    border-bottom: 1px solid var(--glass-border);
+    padding-bottom: 1rem;
+    margin-top: 0;
+}
+
+.rec-card {
+    background: var(--glass-bg);
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    text-align: left;
+    transition: transform 0.2s;
+}
+
+.rec-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255,255,255,0.08);
+}
+
+.rec-card h5 {
+    color: var(--accent-color);
+    margin: 0 0 0.5rem 0;
+}
+
+.rec-card p {
+    font-size: 0.9rem;
+    color: #ddd;
+    margin-bottom: 1rem;
+}
+
+.shop-link {
+    display: inline-block;
+    color: white;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--accent-color);
+    padding-bottom: 2px;
+}
+
+/* Utilities */
+.hidden {
+    display: none !important;
+}
+
+.loader {
+    border: 4px solid rgba(255,255,255,0.1);
+    border-left: 4px solid var(--accent-color);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 1rem;
+}
+
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+@keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
